@@ -221,7 +221,6 @@ describe("Login Page", () => {
     await act(async () => {
       userEvent.click(screen.getByText(/login to qkart/i));
     });
-
     expect(window.localStorage.setItem).toHaveBeenCalledWith(
       "username",
       "crio.do"

@@ -75,7 +75,7 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
           ) : (
             <>
               <Avatar alt={window.localStorage.getItem("username")} src="avatar.png" />
-              <p className="username-text">{JSON.parse(window.localStorage.getItem("username"))}</p>
+              <p className="username-text">{window.localStorage.getItem("username")}</p>
               <Button
                 variant="contained"
                 onClick={logout}
