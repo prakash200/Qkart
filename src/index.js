@@ -1,5 +1,3 @@
-// PORT=8081 react-scripts start
-
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
