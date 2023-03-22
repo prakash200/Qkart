@@ -13,6 +13,7 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Products.css";
+import ProductCard from "./ProductCard";
 
 // Definition of Data Structures used
 /**
@@ -28,6 +29,21 @@ import "./Products.css";
 
 
 const Products = () => {
+
+  const { enqueueSnackbar } = useSnackbar();
+  const [ loading, setloading ] = useState(false)
+  const [ allProducts, setAllProducts ] = useState([])
+  const [ filteredProducts, setfilteredProducts ] = useState([])
+  const [ searchText, setSearchText ] = useState("")
+  const [ debounceTimeOut, setdebounceTimeOut ] = useState(0)
+
+
+  useEffect( ()=>{
+
+    performAPICall();
+
+    
+  },[]);
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
   /**
@@ -67,6 +83,22 @@ const Products = () => {
    * }
    */
   const performAPICall = async () => {
+    setloading(true)
+    try{
+      let response = await axios.get(`${config.endpoint}/products`)
+      setloading(false)
+      setAllProducts(response.data)
+      
+    }catch(error){
+      setloading(false)
+      enqueueSnackbar(
+        'Could not fetch products. Check that the backend is running, reachable and returns valid JSON.',
+        {
+          variant: 'error',
+        },
+      )
+      
+    }
   };
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement search logic
@@ -84,6 +116,28 @@ const Products = () => {
    *
    */
   const performSearch = async (text) => {
+    try{
+      setSearchText(text)
+      const response = await axios.get(`${config.endpoint}/products/search?value=${text}`)
+      setfilteredProducts(response.data)
+    }catch(error){
+      
+      if (error.response) {
+        if (error.response.status === 404) {
+          setfilteredProducts([])
+        }
+
+      }else {
+        enqueueSnackbar(
+          'Could not fetch products. Check that the backend is running, reachable and returns valid JSON.',
+          {
+            variant: 'error',
+          },
+        )
+      }
+
+    }
+    
   };
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Optimise API calls with debounce search implementation
@@ -99,8 +153,20 @@ const Products = () => {
    *
    */
   const debounceSearch = (event, debounceTimeout) => {
-  };
+    // console.log(debounceTimeOut)
+    const value = event.target.value
+    if (debounceTimeOut){
+      clearTimeout(debounceTimeOut)
+    }
 
+    const timeout = setTimeout(()=>{
+      console.log("5 milli seconds done!!!!")
+      performSearch(value)
+    },500)
+    // console.log(timeout)
+    setdebounceTimeOut(timeout)
+    
+  };
 
 
 
@@ -109,8 +175,25 @@ const Products = () => {
 
   return (
     <div>
+      {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
       <Header>
-        {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
+
+        <TextField
+        className="search-desktop"
+        size="small"
+        // style={{margin:"100px"}}
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Search color="primary" />
+            </InputAdornment>
+          ),
+        }}
+        onChange={(event)=> debounceSearch(event, debounceTimeOut)}
+        placeholder="Search for items/categories"
+        name="search"
+      />
 
       </Header>
 
@@ -126,6 +209,7 @@ const Products = () => {
             </InputAdornment>
           ),
         }}
+        onChange={(event)=> debounceSearch(event, debounceTimeOut)}
         placeholder="Search for items/categories"
         name="search"
       />
@@ -139,9 +223,52 @@ const Products = () => {
            </Box>
          </Grid>
        </Grid>
+       {loading?(
+        <Box className="loading">
+        <CircularProgress />
+        <h4>Loading Products...</h4>{' '}
+      </Box>
+       ):(
+        <Grid container marginY="1rem" paddingX="1rem" spacing={2}>
+              {' '}
+              {searchText.length ? (filteredProducts.length ? (filteredProducts.map( (prod)=>(
+                  <Grid item xs={6} md={3} key={prod._id}>
+                    <ProductCard
+                      product={prod}
+                    />{' '}
+                  </Grid>
+                )
+
+                )) : (  <Box className="loading">
+                          <SentimentDissatisfied color="action" />
+                          <h4 style={{ color: '#636363' }}> No products Found </h4>{' '}
+                        </Box>
+                  
+                )
+
+              ) : ( allProducts.map( (product) => (
+                  <Grid item xs={6} md={3} key={product._id}>
+                    <ProductCard
+                      product={product}
+                    />{' '}
+                  </Grid>
+                )
+                )
+
+              )}
+
+
+              
+            </Grid>
+         
+        
+          
+       )}
+       
       <Footer />
     </div>
   );
 };
+
 
 export default Products;
