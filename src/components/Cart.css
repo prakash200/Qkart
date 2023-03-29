@@ -4,6 +4,9 @@
     margin: 0.5rem;
 }
 
+.Cartbcakground{
+    background-color: #E9F5E1;
+}
 .empty {
     display: flex;
     flex-direction: column;

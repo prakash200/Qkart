@@ -46,7 +46,69 @@ import Header from "./Header";
 
 const Checkout = () => {
 
+  const token = localStorage.getItem('token')
+  const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
+  const [items, setItems] = useState([])
+  const [products, setProducts] = useState([])
 
+  const getProducts = async () => {
+    try {
+      const response = await axios.get(`${config.endpoint}/products`)
+
+      setProducts(response.data)
+      return response.data
+    } catch (e) {
+      if (e.response && e.response.status === 500) {
+        enqueueSnackbar(e.response.data.message, { variant: 'error' })
+        return null
+      } else {
+        enqueueSnackbar(
+          'Could not fetch products. Check that the backend is running, reachable and returns valid JSON.',
+          {
+            variant: 'error',
+          },
+        )
+      }
+    }
+  }
+
+  // Fetch cart data
+  const fetchCart = async (token) => {
+    if (!token) return
+    try {
+      const response = await axios.get(`${config.endpoint}/cart`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      return response.data
+    } catch {
+      enqueueSnackbar(
+        'Could not fetch cart details. Check that the backend is running, reachable and returns valid JSON.',
+        {
+          variant: 'error',
+        },
+      )
+      return null
+    }
+  }
+
+  
+  useEffect(() => {
+    const onLoadHandler = async () => {
+      const productsData = await getProducts()
+
+      const cartData = await fetchCart(token)
+
+      if (productsData && cartData) {
+        const cartDetails = await generateCartItemsFrom(cartData, productsData)
+        setItems(cartDetails)
+      }
+    }
+    onLoadHandler()
+  }, [])
 
 
 
@@ -98,7 +160,7 @@ const Checkout = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={3} bgcolor="#E9F5E1">
-          <Cart isReadOnly products={products} items={items} />
+          {/* <Cart isReadOnly products={products} items={items} /> */}
         </Grid>
       </Grid>
       <Footer />

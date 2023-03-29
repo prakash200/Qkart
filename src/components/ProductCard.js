@@ -35,7 +35,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button  color="primary" variant="contained" className="card-button" >
+        <Button  color="primary" variant="contained" className="card-button" onClick={handleAddToCart}>
         ADD TO CART
         </Button>
       </CardActions>

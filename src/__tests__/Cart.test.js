@@ -178,6 +178,7 @@ describe("Cart Component", () => {
     });
 
     const itemQty = await screen.findAllByTestId("item-qty");
+    console.log(itemQty[0]);
     expect(itemQty[0].textContent).toBe("3");
 
     const cartAddCall = mock.history.post.find(
