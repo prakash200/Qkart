@@ -6,7 +6,7 @@ import {
 } from "@mui/icons-material";
 import { Button, IconButton, Stack } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import "./Cart.css";
 
@@ -48,7 +48,6 @@ import "./Cart.css";
  *
  */
 
-const token = window.localStorage.getItem("token")
 
 
 
@@ -138,11 +137,14 @@ const ItemQuantity = ({
  * 
  * 
  */
+
+
 const Cart = ({
   products,
   items = [],
   handleQuantity,
 }) => {
+  const token = window.localStorage.getItem("token");
 
   const history = useHistory();
 

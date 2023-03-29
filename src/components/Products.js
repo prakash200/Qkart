@@ -308,7 +308,8 @@ const Products = () => {
     options = { preventDuplicate: false }
   ) => {
     console.log("Add to Cart is Working")
-    // console.log(items)
+    console.log(token)
+    console.log(options.preventDuplicate, isItemInCart(items, productId))
     
     
     if (!token) {
