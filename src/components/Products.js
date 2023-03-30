@@ -307,9 +307,9 @@ const Products = () => {
     qty,
     options = { preventDuplicate: false }
   ) => {
-    console.log("Add to Cart is Working")
-    console.log(token)
-    console.log(options.preventDuplicate, isItemInCart(items, productId))
+    // console.log("Add to Cart is Working")
+    // console.log(token)
+    // console.log(options.preventDuplicate, isItemInCart(items, productId))
     
     
     if (!token) {
