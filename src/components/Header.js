@@ -35,7 +35,7 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
     return (
       <Box className="header">
         <Box className="header-title">
-          <img src="logo_light.svg" alt="QKart-icon"></img>
+          <img src="logo_light.svg" alt="QKart-icon" onClick={explore}></img>
         </Box>
         {children}
         <Button
@@ -52,7 +52,7 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
   return (
     <Box className="header">
       <Box className="header-title">
-        <img src="logo_light.svg" alt="QKart-icon"></img>
+        <img src="logo_light.svg" alt="QKart-icon" onClick={explore}></img>
       </Box>
       {children}
       <Stack direction="row" spacing={2}>
